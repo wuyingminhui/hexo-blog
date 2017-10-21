@@ -5,5 +5,7 @@ hexo clean
 # 在部署前先生成
 hexo d -g
 git add .
-git commit
+git commit -m "change blog"
 git push
+
+

@@ -80,3 +80,5 @@ deploy:
   type: git
   repo: https://github.com/magicliang/magicliang.github.io
   branch: master
+social:
+  GitHub: https://github.com/magicliang

@@ -82,5 +82,5 @@ deploy:
   branch: master
 social:
   GitHub: https://github.com/magicliang
-highlight_theme: night eighties
+highlight_theme: night
 avatar: /images/rei.jpeg    

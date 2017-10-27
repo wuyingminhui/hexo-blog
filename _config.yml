@@ -84,3 +84,12 @@ social:
   GitHub: https://github.com/magicliang
 highlight_theme: night
 avatar: /images/rei.jpeg    
+
+# RSS订阅支持
+ plugin:
+ - hexo-generator-feed
+# Feed Atom
+ feed:
+ type: atom
+ path: atom.xml
+ limit: 20

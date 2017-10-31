@@ -1,4 +1,4 @@
 #!/bin/bash
 
-rm ./source/_posts/$1.md
+rm -r ./source/_posts/$1.md ./source/_posts/$1
 

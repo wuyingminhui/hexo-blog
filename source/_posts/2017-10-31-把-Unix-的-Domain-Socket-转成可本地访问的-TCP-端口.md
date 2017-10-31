@@ -22,6 +22,10 @@ docker run -d -v /var/run/docker.sock:/var/run/docker.sock -p 127.0.0.1:2375:237
 从容器内往外看的主机，对应外部主机就是 127.0.0.1的端口
 ping docker.for.mac.localhost
 
+值得参考的文：
+1. http://brieflyx.me/2015/linux-tools/socat-introduction/
+
+
 
 
 

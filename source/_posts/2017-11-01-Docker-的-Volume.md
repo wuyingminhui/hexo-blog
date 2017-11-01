@@ -5,6 +5,9 @@ tags:
 - Docker
 ---
 
+为什么要有数据卷
+--------
+
 > Docker镜像是由多个文件系统（只读层）叠加而成。当我们启动一个容器的时候，Docker会加载只读镜像层并在其上（译者注：镜像栈顶部）添加一个读写层。如果运行中的容器修改了现有的一个已经存在的文件，那该文件将会从读写层下面的只读层复制到读写层，该文件的只读版本仍然存在，只是已经被读写层中该文件的副本所隐藏。当删除Docker容器，并通过该镜像重新启动时，之前的更改将会丢失。在Docker中，只读层及在顶部的读写层的组合被称为Union File System（联合文件系统）。
 
 &emsp;&emsp;换言之，删除容器的时候要记得顺便删除数据卷，例如：
@@ -58,7 +61,7 @@ $ docker run -v /home/adrian/data:/data debian ls /data
 
 &emsp;&emsp;此处存疑。
 
-&emsp;&emsp;容器的 Volume 不是为了持久化自己的状态。docker 自己的可读写层的状态另有存储的地方。Volume 是为了把容器及容器产生的数据分离出来。
+&emsp;&emsp;容器的 Volume 不是为了持久化自己的状态。docker 自己的可读写层的状态另有存储的地方。Volume 是为了把容器及容器产生的数据分离出来。实际上有文档显式 Volume 可以在容器被删除后被其他容器所复用。
 
 &emsp;&emsp;Volume可以使用以下两种方式创建：
 
@@ -73,8 +76,50 @@ $ docker run -v /home/adrian/data:/data debian ls /data
 
 &emsp;&emsp;也就是说 docker run -v -p 的选项后接的参数都是从外到内的，而 docker inspect 的显示结果，则是从内到外的。
 
-&emsp;&emsp;本文参考了[《深入理解Docker Volume（一）》][1], [《深入理解Docker Volume（二）》][2]
+单独使用 Volume
+-----------
+
+&emsp;&emsp;没有容器可以创建 Volume，几个例子如下：
+
+Create a volume:
+
+>\$ docker volume create my-vol
+
+List volumes:
+
+>\$ docker volume ls
+local               my-vol
+
+Inspect a volume:
+
+>\$ docker volume inspect my-vol
+[
+    {
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/my-vol/_data",
+        "Name": "my-vol",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+
+Remove a volume:
+
+>$ docker volume rm my-vol
+
+新用户应该优先使用 mount 选项
+------------------
+
+> \$ docker run -d \
+  -it \
+  --name devtest \
+  --mount source=myvol2,target=/app \
+  nginx:latest
+
+&emsp;&emsp;本文参考了[《深入理解Docker Volume（一）》][1], [《深入理解Docker Volume（二）》][2], [《Docker 的官方文档》][3]。
 
 
   [1]: http://dockone.io/article/128
   [2]: http://dockone.io/article/129
+  [3]: https://docs.docker.com/engine/admin/volumes/volumes/#differences-between--v-and---mount-behavior

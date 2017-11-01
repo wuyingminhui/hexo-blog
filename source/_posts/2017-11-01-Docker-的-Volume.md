@@ -15,3 +15,5 @@ docker ps -aq | xargs docker rm -f -v
 # 删除遗留而不用的容器
 docker volume prune
 ```
+
+&emsp;&emsp;Volume 必须在容器初始化时就创建，也就意味着，只能在 docker run 或者 Dockerfile 里面指定数据卷。

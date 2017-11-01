@@ -2,6 +2,7 @@
 title: Docker 的 Volume
 date: 2017-11-01 12:31:35
 tags:
+
 ---
 
 &emsp;&emsp;Volume 必须在容器初始化时就创建，也就意味着，只能在 docker run 或者 Dockerfile 里面指定数据卷。

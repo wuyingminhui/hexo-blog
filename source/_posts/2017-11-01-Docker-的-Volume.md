@@ -2,14 +2,7 @@
 title: Docker 的 Volume
 date: 2017-11-01 12:31:35
 tags:
-- Docker
 ---
-
-&emsp;&emsp;换言之，删除容器的时候要记得顺便删除数据卷，例如：
-
-&emsp;&emsp;删除全部容器连带的数据卷
-
-&emsp;&emsp;删除遗留而不用的容器
 
 &emsp;&emsp;Volume 必须在容器初始化时就创建，也就意味着，只能在 docker run 或者 Dockerfile 里面指定数据卷。
 

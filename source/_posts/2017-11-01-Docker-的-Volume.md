@@ -18,3 +18,8 @@ docker volume prune
 
 &emsp;&emsp;Volume 必须在容器初始化时就创建，也就意味着，只能在 docker run 或者 Dockerfile 里面指定数据卷。
 
+>$ docker run -it --name container-test -h CONTAINER -v /data debian /bin/bash
+root@CONTAINER:/# ls /data
+root@CONTAINER:/# 
+
+&emsp;&emsp;单参数的情况下，把一个 /data 目录挂载到了容器中（可以认为之前这个容器中并不存在这个目录）。如果使用 docker inspect 的方式来查看容器的内容，则可以看到

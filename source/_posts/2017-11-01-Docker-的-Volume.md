@@ -12,15 +12,10 @@ tags:
 
 &emsp;&emsp;删除全部容器连带的数据卷
 
-```bash
-docker ps -aq | xargs docker rm -f -v
-```
+
 
 &emsp;&emsp;删除遗留而不用的容器
 
-```bash
-docker volume prune
-```
 
 &emsp;&emsp;Volume 必须在容器初始化时就创建，也就意味着，只能在 docker run 或者 Dockerfile 里面指定数据卷。
 

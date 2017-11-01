@@ -59,7 +59,8 @@ $ docker run -v /home/adrian/data:/data debian ls /data
 
 >该命令将挂载主机的/home/adrian/data目录到容器内的/data目录上。任何在/home/adrian/data目录的文件都将会出现在容器内。这对于在主机和容器之间共享文件是非常有帮助的，例如挂载需要编译的源代码。为了保证可移植性（并不是所有的系统的主机目录都是可以用的），挂载主机目录不需要从Dockerfile指定。当使用-v参数时，镜像目录下的任何文件都不会被复制到Volume中。（译者注：Volume会复制到镜像目录，镜像不会复制到卷）
 
-&emsp;&emsp;此处存疑。
+&emsp;&emsp;此处虽然奇怪，却是真的，可以指定 volume mapping
+ 的地方不是 Dockerfile，而是 docker-compose file。
 
 &emsp;&emsp;容器的 Volume 不是为了持久化自己的状态。docker 自己的可读写层的状态另有存储的地方。Volume 是为了把容器及容器产生的数据分离出来。实际上有文档显式 Volume 可以在容器被删除后被其他容器所复用。
 

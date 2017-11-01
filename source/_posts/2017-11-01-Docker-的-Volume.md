@@ -24,4 +24,6 @@ root@CONTAINER:/#
 
 &emsp;&emsp;单参数的情况下，把一个 /data 目录挂载到了容器中（可以认为之前这个容器中并不存在这个目录）。如果使用 docker inspect 的方式来查看容器的内容，则可以看到：
 
-> docker inspect -f {{.Volumes}} container-test
+```bash
+docker inspect -f {{.Volumes}} container-test
+```

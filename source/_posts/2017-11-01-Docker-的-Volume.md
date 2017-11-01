@@ -22,4 +22,15 @@ docker volume prune
 root@CONTAINER:/# ls /data
 root@CONTAINER:/# 
 
-&emsp;&emsp;单参数的情况下，把一个 /data 目录挂载到了容器中（可以认为之前这个容器中并不存在这个目录）。如果使用 docker inspect 的方式来查看容器的内容，则可以看到
+&emsp;&emsp;单参数的情况下，把一个 /data 目录挂载到了容器中（可以认为之前这个容器中并不存在这个目录）。如果使用 docker inspect 的方式来查看容器的内容，则可以看到：
+
+> $ docker inspect -f {{.Volumes}} container-test
+
+&emsp;&emsp;输出:
+ 
+>map[/data:/var/lib/docker/vfs/dir/cde167197ccc3e138a14f1a4f...b32cec92e79059437a9] 
+
+&emsp;&emsp;注意看，是container path 在前， host path 在后。
+&emsp;&emsp;如果我们在 host 主机上修改本地目录:
+    
+> $ sudo touch /var/lib/docker/vfs/dir/cde167197ccc3e13814f...b32ce9059437a9/test-file

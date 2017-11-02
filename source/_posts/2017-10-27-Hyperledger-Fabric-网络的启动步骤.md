@@ -3,7 +3,8 @@ title: Hyperledger Fabric 网络的启动步骤
 date: 2017-10-27 19:54:07
 tags:
 - 区块链
-- Hyperledger Fabric
+- Hyperledger
+- Fabric
 ---
 
 &emsp;&emsp;本文是截至日前（2017.10.27）时对官方教程和自我实验的重新梳理。

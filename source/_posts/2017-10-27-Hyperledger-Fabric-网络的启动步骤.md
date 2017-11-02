@@ -80,7 +80,7 @@ peer （peer 的操纵工具）
 
 > CHANNEL_NAME=$CHANNEL_NAME TIMEOUT=10000 docker-compose -f docker-compose-cli.yaml up -d
 
-- 进入 cli 容器：
+- 进入 cli 容器，只有在 cli 容器里，才能进行 channel 相关的操作：
 
 > docker exec -it cli bash
 

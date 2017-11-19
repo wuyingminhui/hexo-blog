@@ -4,6 +4,7 @@ date: 2017-11-17 15:21:44
 tags:
 - Docker
 ---
+123456
 &emsp;&emsp;CMD 与 ENTRYPOINT 都是为了让容器工作得像可执行文件一样，接受参数，产生特定的输出存在的--**容器命令化工具**。如果没有这些工具，那么`docker run -it abc:v0.0.1 /bin/bash` 的最后一个参数就会变成启动命令。如果有CMD，它的命令也会被 docker run 结尾的参数命令锁覆盖，原本的命令不会作为 startup command 执行;如果有 ENTRYPOINT，docker run 结尾的参数命令会作为 ENTRYPOINT 的命令执行; CMD 还可以为 ENTRYPOINT 提供参数。
 
 &emsp;&emsp;比较奇怪的地方是,如果使用了非 /bin/bash 的 startup command，docker run 的时候就不能 /bin/bash 进去了。

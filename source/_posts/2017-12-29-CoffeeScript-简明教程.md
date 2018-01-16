@@ -771,3 +771,957 @@ alert((function() {
   }
 })());
 ```
+当然，有些语句在 JavaScript 中也是不能当做表达式的，比如`break`、`continue`和`return`，如果你在代码块中使用了它们，CoffeeScript不会试图进行转换。
+
+## 操作符与别名 ##
+
+`==`操作符经常引起出乎意料的、与其他语言中表现不一致的行为。所以 CoffeeScript 里没有`==`，而会试着进行再编译。把`==`编译成`===`，`!=`编译成`!==`。另外，它还提供了可读性更好的两个操作符，`is`会被编译为`===`，isnt 会被编译为`isnt`。
+
+除此之外，还可以用`not`作取反操作符`!`的别名。
+
+对于逻辑操作符，`and`会被编译为`&&`，`or`会被便以为`||`。
+
+在 JavaScript 中，有时候条件语句需要另起一行或者在单行内用分号断句，但CoffeeScript 中的 then 就可以帮我们把条件语句（特别是 while、if、switch 的结构中）和被执行语句连起来。
+
+同`YAML`中一样，`on`和`yes`是布尔值`true`的同义词，`off`和`no`是布尔值`false`的同义词。 
+
+同其他脚本语言一样，`unless`是`if`的反写。
+
+同 Ruby 一样，`@property`可以当做`this.property`来用（少写一个字符）。
+
+可以用`in`来做数组元素的存在检查，用`of`来做 JavaScript 键值对的存在性检查。
+
+在`for`循环中，`from`关键字会被编译成 ES2015 的`of`。
+
+为了简化数学表达式，`**`代表幂运算，而`//`执行地板除法（同 Python 一样，去掉小数向下取整）
+
+```coffee
+-7 % 5 == -2 # The remainder of 7 / 5
+-7 %% 5 == 3 # n %% 5 is always between 0 and 4
+
+tabs.selectTabAtIndex((tabs.currentIndex - count) %% tabs.length)
+
+launch() if ignition is on
+
+volume = 10 if band isnt SpinalTap
+
+letTheWildRumpusBegin() unless answer is no
+
+if car.speed < limit then accelerate()
+
+winner = yes if pick in [47, 92, 13]
+
+print inspect "My name is #{@name}"
+```
+```javascript
+var modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
+
+-7 % 5 === -2; // The remainder of 7 / 5
+
+modulo(-7, 5) === 3; // n %% 5 is always between 0 and 4
+
+tabs.selectTabAtIndex(modulo(tabs.currentIndex - count, tabs.length));
+
+var volume, winner;
+
+if (ignition === true) {
+  launch();
+}
+
+if (band !== SpinalTap) {
+  volume = 10;
+}
+
+if (answer !== false) {
+  letTheWildRumpusBegin();
+}
+
+if (car.speed < limit) {
+  accelerate();
+}
+
+if (pick === 47 || pick === 92 || pick === 13) {
+  winner = true;
+}
+
+print(inspect(`My name is ${this.name}`));
+```
+## 存在操作符 ##
+
+在 JavaScript 中确认一个变量是否存在是很困难的。因为`if (variable)` 不仅会在变量不存在时生效，在变量为0值（0,空字符串，false）时也会生效。CoffeeScript 的`?`操作符只在变量为`null`和 `undefined`的时候返回`false`，这很像 Ruby 中的 `nil？`(实际上高版本的 ES 也会有一个叫 `Null Propagation Operator`的类似特性)。
+
+这样我们就可以做更加安全的条件赋值了（比`a = a || value`安全）。
+
+```coffee
+solipsism = true if mind? and not world?
+
+speed = 0
+speed ?= 15
+
+footprints = yeti ? "bear"
+```
+```javascript
+var footprints, solipsism, speed;
+
+if ((typeof mind !== "undefined" && mind !== null) && (typeof world === "undefined" || world === null)) {
+  solipsism = true;
+}
+
+speed = 0;
+
+if (speed == null) {
+  speed = 15;
+}
+```
+
+注意看，一个`?`被翻译成了对`undefined`和`null`的严格求不等`!==`
+。但是，`?`与`unless`搭配的时候，就会被翻译成`==`。
+
+```coffee
+major = 'Computer Science'
+
+unless major?
+  signUpForClass 'Introduction to Wines'
+```
+```javascript
+var major;
+
+major = 'Computer Science';
+
+if (major == null) {
+  signUpForClass('Introduction to Wines');
+}
+```
+
+可以用存在操作符来达到其他语言中经常出现的流利调用，流利调用失败用户会得到`undefined`而不会出现烦人的空指针（在 JavaScript 中实际上是不能在`undefined`上调用特定成员的`TypeError`）异常：
+
+```coffee
+zip = lottery.drawWinner?().address?.zipcode
+```
+```javascript
+var ref, zip;
+
+zip = typeof lottery.drawWinner === "function" ? (ref = lottery.drawWinner().address) != null ? ref.zipcode : void 0 : void 0;
+```
+
+## 无括号的链式调用 ##
+
+用`.`和断行缩进可以像其他脚本语言一样进行无括号链式调用：
+
+```coffee
+$ 'body'
+.click (e) ->
+  $ '.box'
+  .fadeIn 'fast'
+  .addClass 'show'
+.css 'background', 'white'
+```
+```javascript
+$('body').click(function(e) {
+  return $('.box').fadeIn('fast').addClass('show');
+}).css('background', 'white');
+```
+
+## 解构赋值 ##
+
+用过 ES2015 以后版本的读者应该能够理解什么是解构赋值了：
+
+```coffee
+theBait   = 1000
+theSwitch = 0
+
+[theBait, theSwitch] = [theSwitch, theBait]
+```
+```javascript
+var theBait, theSwitch;
+
+theBait = 1000;
+
+theSwitch = 0;
+
+[theBait, theSwitch] = [theSwitch, theBait];
+```
+
+解构赋值搭配上多返回值的函数调用也很有用：
+
+```coffee
+weatherReport = (location) ->
+  # Make an Ajax request to fetch the weather...
+  [location, 72, "Mostly Sunny"]
+
+[city, temp, forecast] = weatherReport "Berkeley, CA"
+```
+```javascript
+var city, forecast, temp, weatherReport;
+
+weatherReport = function(location) {
+  // Make an Ajax request to fetch the weather...
+  return [location, 72, "Mostly Sunny"];
+};
+
+[city, temp, forecast] = weatherReport("Berkeley, CA");
+```
+
+解构赋值对任意深度嵌套的数组和对象也是一个有用的特性：
+
+```coffee
+futurists =
+  sculptor: "Umberto Boccioni"
+  painter:  "Vladimir Burliuk"
+  poet:
+    name:   "F.T. Marinetti"
+    address: [
+      "Via Roma 42R"
+      "Bellagio, Italy 22021"
+    ]
+
+{sculptor} = futurists
+
+{poet: {name, address: [street, city]}} = futurists
+```
+```javascript
+var city, futurists, name, sculptor, street;
+
+futurists = {
+  sculptor: "Umberto Boccioni",
+  painter: "Vladimir Burliuk",
+  poet: {
+    name: "F.T. Marinetti",
+    address: ["Via Roma 42R", "Bellagio, Italy 22021"]
+  }
+};
+
+({sculptor} = futurists);
+
+({
+  poet: {
+    name,
+    address: [street, city]
+  }
+} = futurists);
+```
+
+解构赋值也可以搭配 splats 不定参数使用：
+
+```coffee
+tag = "<impossible>"
+
+[open, contents..., close] = tag.split("")
+```
+```javascript
+var close, contents, i, open, ref, tag,
+  slice = [].slice;
+
+tag = "<impossible>";
+
+ref = tag.split(""), open = ref[0], contents = 3 <= ref.length ? slice.call(ref, 1, i = ref.length - 1) : (i = 1, []), close = ref[i++];
+```
+
+取数组末尾元素的例子：
+
+```coffee
+text = "Every literary critic believes he will
+        outwit history and have the last word"
+
+[first, ..., last] = text.split " "
+```
+```javascript
+var first, last, ref, text;
+
+text = "Every literary critic believes he will outwit history and have the last word";
+
+ref = text.split(" "), first = ref[0], last = ref[ref.length - 1];
+```
+
+与构造函数结合的例子：
+
+```coffee
+class Person
+  constructor: (options) ->
+    {@name, @age, @height = 'average'} = options
+
+tim = new Person name: 'Tim', age: 4
+```
+```javascript
+var Person, tim;
+
+Person = class Person {
+  constructor(options) {
+    ({name: this.name, age: this.age, height: this.height = 'average'} = options);
+  }
+
+};
+
+tim = new Person({
+  name: 'Tim',
+  age: 4
+});
+```
+
+## 绑定（胖）函数 ##
+
+用`->`定义的函数会直接转化为普通的`function`。
+
+JavaScript 中`this`指向的值可以被动态绑定（这真是由来已久的弊病）。有经验的读者肯定能理解，我们在传递回调的时候， 原始`this`经常会丢失，变成新作用域里的`this`。
+
+而使用胖箭头`=>`定义的函数，可以把当前上下文的`this`绑定到函数里（好像调用了一个隐式的`bind`一样）。当我们在 Prototype 和 JQuery 之类的毁掉库里使用函数时，这回变得非常有用。
+
+```coffee
+Account = (customer, cart) ->
+  @customer = customer
+  @cart = cart
+
+  # 如果我们这里使用->箭头，就会编译出 function，function 的 this 是不绑定在当前的 this 上的。
+  $('.shopping_cart').on 'click', (event) =>
+    # 此处的@customer和外部的@customer一致。
+    @customer.purchase @cart
+```
+```javascript
+var Account;
+
+Account = function(customer, cart) {
+  this.customer = customer;
+  this.cart = cart;
+  // JavaScript 中的=>实际上使 this 进入外部上下文的了词法作用域
+  return $('.shopping_cart').on('click', (event) => {
+    return this.customer.purchase(this.cart);
+  });
+};
+```
+
+如果我们在这里使用`->`，函数里的`@customer`实际上就会指向undefined。因为$('.shopping_cart') 这个东西指向的是 dom 变量，很可能没有`customer`这个属性。
+
+胖函数是 CoffeeScript 里最受欢迎的特性，也被 ES2015 吸收了，使用 CoffeeScript 中的`=>`就会被编译成JavaScript 中的`=>`。
+
+## 生成器函数 ##
+
+CoffeeScript 通过`yield`关键字支持 ES2015中的[generator functions][1]。CoffeeScript 中没有`function*(){}`这样的无意义结构，只要有`yield`就够了。
+
+```coffee
+perfectSquares = ->
+  num = 0
+  loop
+    num += 1
+    yield num * num
+  return
+
+window.ps or= perfectSquares()
+```
+```javascript
+var perfectSquares;
+
+perfectSquares = function*() {
+  var num;
+  num = 0;
+  while (true) {
+    num += 1;
+    yield num * num;
+  }
+};
+```
+
+`yield`当然也可以配合`for...from`使用：
+
+```coffee
+fibonacci = ->
+  [previous, current] = [1, 1]
+  loop
+    [previous, current] = [current, previous + current]
+    yield current
+  return
+
+getFibonacciNumbers = (length) ->
+  results = [1]
+  for n from fibonacci()
+    results.push n
+    break if results.length is length
+  results
+```
+```javascript
+var fibonacci, getFibonacciNumbers;
+
+fibonacci = function*() {
+  var current, previous;
+  [previous, current] = [1, 1];
+  while (true) {
+    [previous, current] = [current, previous + current];
+    yield current;
+  }
+};
+
+getFibonacciNumbers = function(length) {
+  var n, ref, results;
+  results = [1];
+  ref = fibonacci();
+  for (n of ref) {
+    results.push(n);
+    if (results.length === length) {
+      break;
+    }
+  }
+  return results;
+};
+```
+
+## 异步函数 ##
+
+ES2017 的[异步函数][2]是通过`await`支持的。同生成器函数一样，CoffeeScript 中的不需要`async`关键字，只要有`await`就行了。
+
+```coffee
+# Your browser must support async/await and speech synthesis
+# to run this example.
+
+sleep = (ms) ->
+  new Promise (resolve) ->
+    window.setTimeout resolve, ms
+
+say = (text) ->
+  window.speechSynthesis.cancel()
+  window.speechSynthesis.speak new SpeechSynthesisUtterance text
+
+countdown = (seconds) ->
+  for i in [seconds..1]
+    say i
+    await sleep 1000 # wait one second
+  say "Blastoff!"
+
+countdown 3
+```
+```javascript
+// Your browser must support async/await and speech synthesis
+// to run this example.
+var countdown, say, sleep;
+
+sleep = function(ms) {
+  return new Promise(function(resolve) {
+    return window.setTimeout(resolve, ms);
+  });
+};
+
+say = function(text) {
+  window.speechSynthesis.cancel();
+  return window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+};
+
+countdown = async function(seconds) {
+  var i, j, ref;
+  for (i = j = ref = seconds; ref <= 1 ? j <= 1 : j >= 1; i = ref <= 1 ? ++j : --j) {
+    say(i);
+    await sleep(1000); // wait one second
+  }
+  return say("Blastoff!");
+};
+
+countdown(3);
+```
+
+## 类 ##
+
+CoffeeScript 1 就提供了`class`和`extends`关键字，作为原型相关函数的语法糖。ES2015吸收了这两个关键字，CoffeeScript 2 直接把这两个关键字编译成 ES2015的类。
+
+```coffee
+class Animal
+  constructor: (@name) ->
+
+  move: (meters) ->
+    alert @name + " moved #{meters}m."
+
+class Snake extends Animal
+  move: ->
+    alert "Slithering..."
+    super 5
+
+class Horse extends Animal
+  move: ->
+    alert "Galloping..."
+    super 45
+
+sam = new Snake "Sammy the Python"
+tom = new Horse "Tommy the Palomino"
+
+sam.move()
+tom.move()
+```
+```javascript
+var Animal, Horse, Snake, sam, tom;
+
+Animal = class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  move(meters) {
+    return alert(this.name + ` moved ${meters}m.`);
+  }
+
+};
+
+Snake = class Snake extends Animal {
+  move() {
+    alert("Slithering...");
+    return super.move(5);
+  }
+
+};
+
+Horse = class Horse extends Animal {
+  move() {
+    alert("Galloping...");
+    return super.move(45);
+  }
+
+};
+
+sam = new Snake("Sammy the Python");
+
+tom = new Horse("Tommy the Palomino");
+
+sam.move();
+
+tom.move();
+```
+
+可以用`@`开头的函数来定义静态方法：
+
+```coffee
+class Teenager
+  @say: (speech) ->
+    words = speech.split ' '
+    fillers = ['uh', 'um', 'like', 'actually', 'so', 'maybe']
+    output = []
+    for word, index in words
+      output.push word
+      output.push fillers[Math.floor(Math.random() * fillers.length)] unless index is words.length - 1
+    output.join ', '
+```
+```javascript
+var Teenager;
+
+Teenager = class Teenager {
+  static say(speech) {
+    var fillers, i, index, len, output, word, words;
+    words = speech.split(' ');
+    fillers = ['uh', 'um', 'like', 'actually', 'so', 'maybe'];
+    output = [];
+    for (index = i = 0, len = words.length; i < len; index = ++i) {
+      word = words[index];
+      output.push(word);
+      if (index !== words.length - 1) {
+        output.push(fillers[Math.floor(Math.random() * fillers.length)]);
+      }
+    }
+    return output.join(', ');
+  }
+
+};
+```
+
+## 原型式继承 ##
+
+ES2015提供了一个短路操作符给原型链相关的操作：
+
+```coffee
+String::dasherize = ->
+  this.replace /_/g, "-"
+```
+```javascript
+String.prototype.dasherize = function() {
+  return this.replace(/_/g, "-");
+};
+```
+## Switch/When/Else ##
+
+CoffeeScript 中的`switch`不用担心忘记写`break`出现错误的跳转：
+
+```coffee
+switch day
+  when "Mon" then go work
+  when "Tue" then go relax
+  when "Thu" then go iceFishing
+  when "Fri", "Sat"
+    if day is bingoDay
+      go bingo
+      go dancing
+  when "Sun" then go church
+  else go work
+```
+```javascript
+switch (day) {
+  case "Mon":
+    go(work);
+    break;
+  case "Tue":
+    go(relax);
+    break;
+  case "Thu":
+    go(iceFishing);
+    break;
+  case "Fri":
+  case "Sat":
+    if (day === bingoDay) {
+      go(bingo);
+      go(dancing);
+    }
+    break;
+  case "Sun":
+    go(church);
+    break;
+  default:
+    go(work);
+}
+```
+
+在之前读者已经看到了 CoffeeScript 中大量的语句都可以带有返回值，`switch`也不例外。以下的例子里面，switch 后面连表达式都没有：
+
+```coffee
+score = 76
+grade = switch
+  when score < 60 then 'F'
+  when score < 70 then 'D'
+  when score < 80 then 'C'
+  when score < 90 then 'B'
+  else 'A'
+# grade == 'C'
+```
+```javascript
+var grade, score;
+
+score = 76;
+
+grade = (function() {
+  switch (false) {
+    case !(score < 60):
+      return 'F';
+    case !(score < 70):
+      return 'D';
+    case !(score < 80):
+      return 'C';
+    case !(score < 90):
+      return 'B';
+    default:
+      return 'A';
+  }
+})();
+
+// grade == 'C'
+```
+
+## Try/Catch/Finally ##
+
+CoffeeScript 中的`try`/`catch`/`finally`块可以完全不带大括号：
+
+```coffee
+try
+  allHellBreaksLoose()
+  catsAndDogsLivingTogether()
+catch error
+  print error
+finally
+  cleanUp()
+```
+```javascript
+var error;
+
+try {
+  allHellBreaksLoose();
+  catsAndDogsLivingTogether();
+} catch (error1) {
+  error = error1;
+  print(error);
+} finally {
+  cleanUp();
+}
+```
+
+## 链式比较 ##
+
+CoffeeScript 从 Python 中借来了[链式比较][3]，这样范围比较的语句就变得更加简单了。
+
+```coffee
+cholesterol = 127
+
+healthy = 200 > cholesterol > 60
+```
+```javascript
+var cholesterol, healthy;
+
+cholesterol = 127;
+
+healthy = (200 > cholesterol && cholesterol > 60);
+```
+
+## 块状的正则表达式 ##
+
+我们已经看到了块状（多行）字符串和注释，CoffeeScript 同样支持块状正则表达式。模仿自 Perl 的`/x`修饰符，CoffeeScript 使用`///`来对多行表达式定界，这样多行的正则比单行的正则就更加可读了：
+
+```coffee
+NUMBER     = ///
+  ^ 0b[01]+    |              # binary
+  ^ 0o[0-7]+   |              # octal
+  ^ 0x[\da-f]+ |              # hex
+  ^ \d*\.?\d+ (?:e[+-]?\d+)?  # decimal
+///i
+```
+```javascript
+var NUMBER;
+
+NUMBER = /^0b[01]+|^0o[0-7]+|^0x[\da-f]+|^\d*\.?\d+(?:e[+-]?\d+)?/i; // binary
+// octal
+// hex
+// decimal
+```
+
+## 标签化的模板字面量 ##
+
+CoffeeScript 支持 [ES2015中的标签化模板字面量][4]，提供了自定义的字符串内插的能力。
+
+```coffee
+upperCaseExpr = (textParts, expressions...) ->
+  textParts.reduce (text, textPart, i) ->
+    text + expressions[i - 1].toUpperCase() + textPart
+
+greet = (name, adjective) ->
+  upperCaseExpr"""
+               Hi #{name}. You look #{adjective}!
+               """
+```
+```javascript
+var greet, upperCaseExpr;
+
+upperCaseExpr = function(textParts, ...expressions) {
+  return textParts.reduce(function(text, textPart, i) {
+    return text + expressions[i - 1].toUpperCase() + textPart;
+  });
+};
+
+greet = function(name, adjective) {
+  return upperCaseExpr`Hi ${name}. You look ${adjective}!`;
+};
+```
+
+## 模块 ##
+
+CoffeeScript 中的模块和 ES2015中的模块很相似，都是`import`和`export`语法：
+
+```coffee
+import 'local-file.coffee'
+import 'coffeescript'
+
+import _ from 'underscore'
+import * as underscore from 'underscore'
+
+import { now } from 'underscore'
+import { now as currentTimestamp } from 'underscore'
+import { first, last } from 'underscore'
+import utilityBelt, { each } from 'underscore'
+
+export default Math
+export square = (x) -> x * x
+export class Mathematics
+  least: (x, y) -> if x < y then x else y
+
+export { sqrt }
+export { sqrt as squareRoot }
+export { Mathematics as default, sqrt as squareRoot }
+
+export * from 'underscore'
+export { max, min } from 'underscore'
+```
+```javascript
+import 'local-file.coffee';
+
+import 'coffeescript';
+
+import _ from 'underscore';
+
+import * as underscore from 'underscore';
+
+import {
+  now
+} from 'underscore';
+
+import {
+  now as currentTimestamp
+} from 'underscore';
+
+import {
+  first,
+  last
+} from 'underscore';
+
+import utilityBelt, {
+  each
+} from 'underscore';
+
+export default Math;
+
+export var square = function(x) {
+  return x * x;
+};
+
+export var Mathematics = class Mathematics {
+  least(x, y) {
+    if (x < y) {
+      return x;
+    } else {
+      return y;
+    }
+  }
+
+};
+
+export {
+  sqrt
+};
+
+export {
+  sqrt as squareRoot
+};
+
+export {
+  Mathematics as default,
+  sqrt as squareRoot
+};
+
+export * from 'underscore';
+
+export {
+  max,
+  min
+} from 'underscore';
+```
+
+## 嵌入式 JavaScript ##
+
+在 CoffeeScript 中可以用倒引号（\`）直接引用 JavaScript 代码：
+
+```coffee
+hi = `function() {
+  return [document.title, "Hello JavaScript"].join(": ");
+}`
+
+# \`会被编译成`，\\\`会被编译成\`
+markdown = `function () {
+  return \`In Markdown, write code like \\\`this\\\`\`;
+}`
+```
+```javascript
+var hi;
+
+hi = function() {
+  return [document.title, "Hello JavaScript"].join(": ");
+};
+
+var markdown;
+
+markdown = function () {
+  return `In Markdown, write code like \`this\``;
+};
+```
+
+用三个倒引号可以很轻松地引用一大块 JavaScript 代码：
+
+```coffee
+\```
+function time() {
+  return `The time is ${new Date().toLocaleTimeString()}`;
+}
+\```
+```
+```javascript
+function time() {
+  return `The time is ${new Date().toLocaleTimeString()}`;
+}
+;
+```
+
+## JSX ##
+
+CoffeeScript 不需要专门的插件或者设置，就可以理解 JSX。
+
+同普通的 JSX 一样，`<`和`>`指明了XML 元素，由 `{`和`}`包围的代码会被内插替换。为了避免和大于、小于的比较混淆，类似`i < len`的代码必须带空格，不能写作`i<len`。编译器有时候能够在你忘记加空格的时候，猜到你的意图，但不要心怀侥幸，还是要尽量自己加空格。
+
+```coffee
+renderStarRating = ({ rating, maxStars }) ->
+  <aside title={"Rating: #{rating} of #{maxStars} stars"}>
+    {for wholeStar in [0...Math.floor(rating)]
+      <Star className="wholeStar" key={wholeStar} />}
+    {if rating % 1 isnt 0
+      <Star className="halfStar" />}
+    {for emptyStar in [Math.ceil(rating)...maxStars]
+      <Star className="emptyStar" key={emptyStar} />}
+  </aside>
+```
+```javascript
+var renderStarRating;
+
+renderStarRating = function({rating, maxStars}) {
+  var emptyStar, wholeStar;
+  return <aside title={`Rating: ${rating} of ${maxStars} stars`}>
+    {(function() {
+    var i, ref, results;
+    results = [];
+    for (wholeStar = i = 0, ref = Math.floor(rating); 0 <= ref ? i < ref : i > ref; wholeStar = 0 <= ref ? ++i : --i) {
+      results.push(<Star className="wholeStar" key={wholeStar} />);
+    }
+    return results;
+  })()}
+    {(rating % 1 !== 0 ? <Star className="halfStar" /> : void 0)}
+    {(function() {
+    var i, ref, ref1, results;
+    results = [];
+    for (emptyStar = i = ref = Math.ceil(rating), ref1 = maxStars; ref <= ref1 ? i < ref1 : i > ref1; emptyStar = ref <= ref1 ? ++i : --i) {
+      results.push(<Star className="emptyStar" key={emptyStar} />);
+    }
+    return results;
+  })()}
+  </aside>;
+};
+```
+
+## 类型注解 ##
+
+Flow 风格的注释式类型注解可以在 CoffeeScript 中提供静态类型检查的能力（TypeScript 的粉丝可能要头痛了）：
+
+```coffee
+# @flow
+
+###::
+type Obj = {
+  num: number,
+};
+###
+
+fn = (str ###: string ###, obj ###: Obj ###) ###: string ### ->
+  str + obj.num
+
+```
+```javascript
+// @flow
+/*::
+type Obj = {
+  num: number,
+};
+*/
+var fn;
+
+fn = function(str/*: string */, obj/*: Obj */)/*: string */ {
+  return str + obj.num;
+};
+```
+
+如果用户已经成功[安装了 Flow][5] 和[最新的 CoffeeScript][6]，可以用如下命令进行类型检查：
+
+```bash
+coffee --bare --no-header --compile app.coffee && npm run flow
+```
+
+`--bare --no-header`非常重要，因为 Flow 要求文件中的第一行是`// @flow`注释。
+
+
+  [1]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
+  [2]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+  [3]: https://docs.python.org/3/reference/expressions.html#not-in
+  [4]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_template_literals
+  [5]: https://flow.org/en/docs/install/
+  [6]: http://coffeescript.org/#installation

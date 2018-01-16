@@ -17,9 +17,9 @@ tags:
 
 &emsp;&emsp;CoffeeScript 即是 JavaScript 1.5 时代的 Pre-JavaScript 语言中的佼佼者。其设计的语法和句法利用了 Ruby 和 Python 的优点，然而又能去除 JavaScript 中容易产生二义性的部分，可以认为是一种变换写法的 JavaScript 语言子集，也就是美化过的“The Good Parts”。CoffeeScript 的定位，本来是一门 little language，它的目的不是取代 JavaScript，而是用更好的风格来编写 JavaScript，因此其最终目标也是编译成 JavaScript。因此，很多人都把它当做下一代 JavaScript 标准出现以前的过渡用法。
 
-&emsp;&emsp;2015年以来，ES6.0以及后来的 ES2015等标准的制定以及现代浏览器对原生语法支持的逐步实现，使得大部分众望所归的语言特性都可以在原生 JavaScript 中找到。旧的 CoffeeScript 编译的结果已然不兼容新的ES2015的发展方向，CoffeeScript 作为一个过渡时期的产物，似乎已然完成了它的历史使命。
+&emsp;&emsp;2015年以来，ES6.0以及后来的 ES2015等标准的制定以及现代浏览器对原生语法支持的逐步实现，使得大部分众望所归的语言特性都可以在原生 JavaScript 中找到。旧的 CoffeeScript(CoffeeScript 1) 编译的结果已然不兼容新的ES2015的发展方向，CoffeeScript 作为一个过渡时期的产物，似乎已然完成了它的历史使命。
 
-&emsp;&emsp;但 CoffeeScript 的发展并没有停止。CofffeeScript 紧随现代 JavaScript 推出了 CoffeeScript2。这一版本的 CoffeeScript 不仅保留了大部分上一版本 Ruby/Python 风格的优美语法，也大量兼容了 ES2015 的新特性（除了 import/export 这个在前后端实行起来经常需要转义和 polyfill 的特性以外），成为了一门更加现代的 little langugage。
+&emsp;&emsp;但 CoffeeScript 的发展并没有停止。CofffeeScript 紧随现代 JavaScript 推出了 CoffeeScript 2。这一版本的 CoffeeScript 不仅保留了大部分上一版本 Ruby/Python 风格的优美语法，也大量兼容了 ES2015 的新特性（除了 import/export 这个在前后端实行起来经常需要转义和 polyfill 的特性以外），成为了一门更加现代的 little langugage。
 
 &emsp;&emsp;可能有读者会问，既然已经有了 ES2015，为什么还要再来一门编程语言呢？笔者认为，不同的编程语言，其实是不同的思考和设计工具。虽说图灵完备的语言总是等价的，但通过另一个角度来对问题和解建模，可以更有效地提高自己对原本掌握的语言的理解。因此，了解 CoffeeScript 的设计和使用理念，一定能对使用原生 JavaScript 编程有所脾益。
 

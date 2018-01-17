@@ -1,5 +1,5 @@
 ---
-title: CoffeeScript 简明教程
+title: CoffeeScript2 简明教程
 date: 2017-12-29 19:50:37
 tags:
 - CoffeeScript

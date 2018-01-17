@@ -7,6 +7,8 @@ tags:
 
 ---
 
+本文还是对《区块链：原理、设计与应用》的一个基础技术的总结和摘录。
+
 ![](https://ws1.sinaimg.cn/large/66dd581fly1fnjpt4uvomj20zk0mnmyi.jpg)
 
 ## 默克尔树的特点 ##

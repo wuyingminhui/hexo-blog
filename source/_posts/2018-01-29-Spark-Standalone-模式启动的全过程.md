@@ -174,7 +174,9 @@ object SimpleApplication {
 完整的目标工程见[此][1]。
 
 sbt 部分的[参考链接][2]。
+本文主要参考 Spark 的[quickstart][3]。
 
 
   [1]: https://github.com/magicliang/SparkStudy/tree/master/first-application
   [2]: https://www.scala-sbt.org/1.x/docs/Hello.html
+  [3]: https://spark.apache.org/docs/latest/quick-start.html
